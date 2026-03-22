@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="BudgetTracker.API/BudgetTracker.API.csproj" />
+  <Project Path="BudgetTracker.Application/BudgetTracker.Application.csproj" />
+  <Project Path="BudgetTracker.Domain/BudgetTracker.Domain.csproj" />
+  <Project Path="BudgetTracker.Infrastructure/BudgetTracker.Infrastructure.csproj" />
+  <Project Path="BudgetTracker.Tests/BudgetTracker.Tests.csproj" />
+</Solution>

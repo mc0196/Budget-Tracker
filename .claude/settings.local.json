@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dotnet new:*)",
+      "Bash(dotnet add:*)",
+      "Bash(dotnet --version)",
+      "Bash(dotnet --list-sdks)",
+      "Read(//usr/local/share/dotnet/**)",
+      "Bash(/usr/local/share/dotnet/dotnet --list-sdks)",
+      "Bash(__NEW_LINE_5f77b19169e0b914__ export:*)",
+      "Bash(__NEW_LINE_e3ec3e03a2b1001a__ export:*)",
+      "Bash(__NEW_LINE_b55e3f3bd3f3cd53__ export:*)",
+      "Bash(__NEW_LINE_2e8b8659c6ab3298__ export:*)",
+      "Bash(__NEW_LINE_6ab8d3fbb4083623__ export:*)",
+      "Bash(__NEW_LINE_a1734360d0480ab6__ export:*)",
+      "Bash(__NEW_LINE_149acd90df6d056d__ export:*)",
+      "Bash(__NEW_LINE_2c24bd16b601109e__ export:*)"
+    ]
+  }
+}
