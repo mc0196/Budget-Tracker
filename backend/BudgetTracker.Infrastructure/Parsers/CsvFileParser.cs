@@ -26,7 +26,7 @@ public class CsvFileParser : IFileParser
     private static readonly string[] DateColumnNames =
         ["Date", "Transaction Date", "ValueDate", "Booking Date", "Data", "Datum"];
     private static readonly string[] DescriptionColumnNames =
-        ["Description", "Narrative", "Details", "Memo", "Reference", "Descrizione"];
+        ["Description", "Narrative", "Details", "Memo", "Reference", "Descrizione", "Operazione", "Dettagli"];
     private static readonly string[] AmountColumnNames =
         ["Amount", "Value", "Importo", "Betrag"];
     private static readonly string[] DebitColumnNames =
@@ -55,8 +55,30 @@ public class CsvFileParser : IFileParser
         };
 
         using var csv = new CsvReader(reader, config);
-        csv.Read();
-        csv.ReadHeader();
+
+        // Some banks prepend metadata rows (e.g. "Data inizio periodo: 01/01/2026")
+        // before the actual column header row. Scan forward until we find a row whose
+        // first cell matches a known date-column name, then treat that as the header.
+        var allKnownColumns = DateColumnNames
+            .Concat(DescriptionColumnNames)
+            .Concat(AmountColumnNames)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        while (csv.Read())
+        {
+            var firstCell = csv.GetField(0)?.Trim() ?? "";
+            if (allKnownColumns.Contains(firstCell))
+            {
+                csv.ReadHeader();
+                break;
+            }
+            // Fallback: stop after 20 rows to avoid infinite scan on malformed files
+            if (csv.CurrentIndex > 20)
+            {
+                csv.ReadHeader();
+                break;
+            }
+        }
 
         var headers = csv.HeaderRecord ?? [];
         _logger.LogDebug("CSV headers detected: {Headers}", string.Join(", ", headers));
