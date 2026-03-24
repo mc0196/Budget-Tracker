@@ -14,7 +14,10 @@
       "Bash(__NEW_LINE_6ab8d3fbb4083623__ export:*)",
       "Bash(__NEW_LINE_a1734360d0480ab6__ export:*)",
       "Bash(__NEW_LINE_149acd90df6d056d__ export:*)",
-      "Bash(__NEW_LINE_2c24bd16b601109e__ export:*)"
+      "Bash(__NEW_LINE_2c24bd16b601109e__ export:*)",
+      "Bash(curl -s http://localhost:5050/api/dashboard)",
+      "Bash(python3 -m json.tool)",
+      "Bash(git stash:*)"
     ]
   }
 }

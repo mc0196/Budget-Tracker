@@ -15,6 +15,18 @@ public class TransactionsController : ControllerBase
         _transactionService = transactionService;
     }
 
+    /// <summary>Create a transaction manually.</summary>
+    [HttpPost]
+    [ProducesResponseType(typeof(TransactionDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> Create(
+        [FromBody] CreateTransactionRequest request,
+        CancellationToken cancellationToken)
+    {
+        var created = await _transactionService.CreateAsync(request, cancellationToken);
+        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+    }
+
     /// <summary>Get all transactions, most recent first.</summary>
     [HttpGet]
     [ProducesResponseType(typeof(IReadOnlyList<TransactionDto>), StatusCodes.Status200OK)]
