@@ -6,7 +6,7 @@ import type {
   TransactionFilters,
 } from "@/types";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5050";
 
 // ─── Core fetch wrapper ───────────────────────────────────────────────────────
 
@@ -36,7 +36,8 @@ export const categoriesApi = {
 // ─── Dashboard ───────────────────────────────────────────────────────────────
 
 export const dashboardApi = {
-  get: () => apiFetch<DashboardData>("/api/dashboard"),
+  get: (year: number, month: number) =>
+    apiFetch<DashboardData>(`/api/dashboard?year=${year}&month=${month}`),
 };
 
 // ─── Transactions ─────────────────────────────────────────────────────────────
@@ -58,6 +59,12 @@ export const transactionsApi = {
     apiFetch<void>(`/api/transactions/${id}`, {
       method: "PATCH",
       body: JSON.stringify({ categoryId }),
+    }),
+
+  create: (data: { date: string; description: string; amount: number; type: string; categoryId: string | null }) =>
+    apiFetch<Transaction>("/api/transactions", {
+      method: "POST",
+      body: JSON.stringify(data),
     }),
 
   delete: (id: string) =>

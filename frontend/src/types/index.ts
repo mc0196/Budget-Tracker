@@ -26,26 +26,27 @@ export interface Transaction {
 // ─── Dashboard ───────────────────────────────────────────────────────────────
 
 export interface CategoryBreakdown {
-  categoryId: string;
   categoryName: string;
-  color: string;
-  total: number;
+  categoryColor: string | null;
+  amount: number;
   percentage: number;
 }
 
 export interface MonthlyTotal {
   year: number;
   month: number;
+  monthLabel: string;
   income: number;
   expenses: number;
+  net: number;
 }
 
 export interface DashboardData {
   totalIncome: number;
   totalExpenses: number;
   netBalance: number;
-  expensesByCategory: CategoryBreakdown[];
-  monthlyTotals: MonthlyTotal[];
+  spendingByCategory: CategoryBreakdown[];
+  monthlyTrend: MonthlyTotal[];
 }
 
 // ─── Import ──────────────────────────────────────────────────────────────────
