@@ -137,7 +137,7 @@ public class AppDbContext : DbContext
             new { Id = new Guid("10000000-0000-0000-0000-000000000011"), Name = "Investments",
                   Type = TransactionType.Expense, Color = (string?)"#0ea5e9", Icon = (string?)"📈" },
             new { Id = new Guid("10000000-0000-0000-0000-000000000012"), Name = "Savings",
-                  Type = TransactionType.Expense, Color = (string?)"#10b981", Icon = (string?)"🏦" },
+                  Type = TransactionType.Expense, Color = (string?)"#8b5cf6", Icon = (string?)"🏦" },
         };
         modelBuilder.Entity<Category>().HasData(categories);
 
@@ -153,11 +153,6 @@ public class AppDbContext : DbContext
             new { Id = new Guid("20000000-0000-0000-0000-000000000008"), Keyword = "spotify",     CategoryId = new Guid("10000000-0000-0000-0000-000000000006"), Priority = 5,  IsActive = true },
             new { Id = new Guid("20000000-0000-0000-0000-000000000009"), Keyword = "pharmacy",    CategoryId = new Guid("10000000-0000-0000-0000-000000000007"), Priority = 5,  IsActive = true },
             new { Id = new Guid("20000000-0000-0000-0000-000000000010"), Keyword = "restaurant",  CategoryId = new Guid("10000000-0000-0000-0000-000000000008"), Priority = 5,  IsActive = true },
-            new { Id = new Guid("20000000-0000-0000-0000-000000000011"), Keyword = "degiro",       CategoryId = new Guid("10000000-0000-0000-0000-000000000011"), Priority = 8,  IsActive = true },
-            new { Id = new Guid("20000000-0000-0000-0000-000000000012"), Keyword = "fineco",       CategoryId = new Guid("10000000-0000-0000-0000-000000000011"), Priority = 8,  IsActive = true },
-            new { Id = new Guid("20000000-0000-0000-0000-000000000013"), Keyword = "directa",      CategoryId = new Guid("10000000-0000-0000-0000-000000000011"), Priority = 8,  IsActive = true },
-            new { Id = new Guid("20000000-0000-0000-0000-000000000014"), Keyword = "trading",      CategoryId = new Guid("10000000-0000-0000-0000-000000000011"), Priority = 7,  IsActive = true },
-            new { Id = new Guid("20000000-0000-0000-0000-000000000015"), Keyword = "investiment",  CategoryId = new Guid("10000000-0000-0000-0000-000000000011"), Priority = 7,  IsActive = true },
         };
         modelBuilder.Entity<CategorizationRule>().HasData(rules);
     }

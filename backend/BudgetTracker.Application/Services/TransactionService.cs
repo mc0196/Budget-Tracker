@@ -1,6 +1,5 @@
 using BudgetTracker.Application.DTOs;
 using BudgetTracker.Application.Interfaces;
-using BudgetTracker.Domain.Enums;
 using BudgetTracker.Domain.Exceptions;
 
 namespace BudgetTracker.Application.Services;
@@ -26,6 +25,36 @@ public class TransactionService
     {
         var transactions = await _transactionRepository.GetAllAsync(cancellationToken);
         return transactions.Select(MapToDto).ToList();
+    }
+
+    public async Task<IReadOnlyList<TransactionDto>> GetByMonthAsync(int year, int month, CancellationToken cancellationToken = default)
+    {
+        var from = new DateOnly(year, month, 1);
+        var to = from.AddMonths(1).AddDays(-1);
+        var transactions = await _transactionRepository.GetByPeriodAsync(from, to, cancellationToken);
+        return transactions.Select(MapToDto).ToList();
+    }
+
+    public async Task<TransactionDto> CreateAsync(CreateTransactionRequest request, CancellationToken cancellationToken = default)
+    {
+        var defaultAccountId = new Guid("00000000-0000-0000-0000-000000000001");
+        var transaction = new Domain.Entities.Transaction(
+            accountId: defaultAccountId,
+            date: request.Date,
+            description: request.Description,
+            amount: request.Amount,
+            type: request.Type,
+            isManuallyCreated: true
+        );
+
+        if (request.CategoryId.HasValue)
+            transaction.AssignCategory(request.CategoryId.Value);
+
+        await _transactionRepository.AddRangeAsync([transaction], cancellationToken);
+        await _transactionRepository.SaveChangesAsync(cancellationToken);
+
+        var saved = await _transactionRepository.GetByIdAsync(transaction.Id, cancellationToken);
+        return MapToDto(saved!);
     }
 
     public async Task<TransactionDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
@@ -60,39 +89,6 @@ public class TransactionService
         await _transactionRepository.SaveChangesAsync(cancellationToken);
 
         return MapToDto(transaction);
-    }
-
-    public async Task<TransactionDto> CreateAsync(
-        CreateTransactionRequest request,
-        CancellationToken cancellationToken = default)
-    {
-        if (!Enum.TryParse<TransactionType>(request.Type, out var type))
-            throw new DomainException($"Invalid transaction type '{request.Type}'. Use 'Income' or 'Expense'.");
-
-        if (request.Amount <= 0)
-            throw new DomainException("Amount must be greater than zero.");
-
-        var defaultAccountId = Guid.Parse("00000000-0000-0000-0000-000000000001");
-        var transaction = new Domain.Entities.Transaction(
-            accountId: defaultAccountId,
-            date: request.Date,
-            description: request.Description,
-            amount: request.Amount,
-            type: type,
-            isManuallyCreated: true);
-
-        if (request.CategoryId.HasValue)
-        {
-            var category = await _categoryRepository.GetByIdAsync(request.CategoryId.Value, cancellationToken)
-                ?? throw new DomainException($"Category {request.CategoryId} not found.");
-            transaction.AssignCategory(category.Id);
-        }
-
-        await _transactionRepository.AddRangeAsync([transaction], cancellationToken);
-        await _transactionRepository.SaveChangesAsync(cancellationToken);
-
-        var saved = await _transactionRepository.GetByIdAsync(transaction.Id, cancellationToken);
-        return MapToDto(saved!);
     }
 
     public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)

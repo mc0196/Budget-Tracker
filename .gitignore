@@ -55,6 +55,14 @@ public/workbox-*.js.map
 *.tsbuildinfo
 next-env.d.ts
 
+# ─── Test / sample data files (bank statements, not for source control) ──────
+*.csv
+*.xls
+*.xlsx
+
+# ─── Claude Code ─────────────────────────────────────────────────────────────
+.claude/settings.local.json
+
 # ─── macOS ───────────────────────────────────────────────────────────────────
 .DS_Store
 .AppleDouble

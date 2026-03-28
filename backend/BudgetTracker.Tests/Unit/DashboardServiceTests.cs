@@ -32,7 +32,7 @@ public class DashboardServiceTests
             .ReturnsAsync(transactions);
 
         var service = new DashboardService(repo.Object);
-        var dashboard = await service.GetDashboardAsync();
+        var dashboard = await service.GetDashboardAsync(2026, 1);
 
         dashboard.TotalIncome.Should().Be(3000m);
         dashboard.TotalExpenses.Should().Be(700m);
@@ -47,7 +47,7 @@ public class DashboardServiceTests
             .ReturnsAsync([]);
 
         var service = new DashboardService(repo.Object);
-        var dashboard = await service.GetDashboardAsync();
+        var dashboard = await service.GetDashboardAsync(2026, 1);
 
         dashboard.TotalIncome.Should().Be(0);
         dashboard.TotalExpenses.Should().Be(0);
@@ -72,7 +72,7 @@ public class DashboardServiceTests
             .ReturnsAsync(transactions);
 
         var service = new DashboardService(repo.Object);
-        var dashboard = await service.GetDashboardAsync();
+        var dashboard = await service.GetDashboardAsync(2026, 1);
 
         dashboard.MonthlyTrend.Should().HaveCount(2);
         dashboard.MonthlyTrend[0].Income.Should().Be(3000m);
@@ -94,7 +94,7 @@ public class DashboardServiceTests
             .ReturnsAsync(transactions);
 
         var service = new DashboardService(repo.Object);
-        var dashboard = await service.GetDashboardAsync();
+        var dashboard = await service.GetDashboardAsync(2026, 1);
 
         // Both are "Uncategorized" so they merge into one bucket
         dashboard.SpendingByCategory.Should().HaveCount(1);

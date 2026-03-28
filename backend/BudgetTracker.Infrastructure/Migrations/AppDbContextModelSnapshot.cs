@@ -160,46 +160,6 @@ namespace BudgetTracker.Infrastructure.Migrations
                             IsActive = true,
                             Keyword = "restaurant",
                             Priority = 5
-                        },
-                        new
-                        {
-                            Id = new Guid("20000000-0000-0000-0000-000000000011"),
-                            CategoryId = new Guid("10000000-0000-0000-0000-000000000011"),
-                            IsActive = true,
-                            Keyword = "degiro",
-                            Priority = 8
-                        },
-                        new
-                        {
-                            Id = new Guid("20000000-0000-0000-0000-000000000012"),
-                            CategoryId = new Guid("10000000-0000-0000-0000-000000000011"),
-                            IsActive = true,
-                            Keyword = "fineco",
-                            Priority = 8
-                        },
-                        new
-                        {
-                            Id = new Guid("20000000-0000-0000-0000-000000000013"),
-                            CategoryId = new Guid("10000000-0000-0000-0000-000000000011"),
-                            IsActive = true,
-                            Keyword = "directa",
-                            Priority = 8
-                        },
-                        new
-                        {
-                            Id = new Guid("20000000-0000-0000-0000-000000000014"),
-                            CategoryId = new Guid("10000000-0000-0000-0000-000000000011"),
-                            IsActive = true,
-                            Keyword = "trading",
-                            Priority = 7
-                        },
-                        new
-                        {
-                            Id = new Guid("20000000-0000-0000-0000-000000000015"),
-                            CategoryId = new Guid("10000000-0000-0000-0000-000000000011"),
-                            IsActive = true,
-                            Keyword = "investiment",
-                            Priority = 7
                         });
                 });
 
@@ -324,7 +284,7 @@ namespace BudgetTracker.Infrastructure.Migrations
                         new
                         {
                             Id = new Guid("10000000-0000-0000-0000-000000000012"),
-                            Color = "#10b981",
+                            Color = "#8b5cf6",
                             Icon = "🏦",
                             Name = "Savings",
                             Type = "Expense"

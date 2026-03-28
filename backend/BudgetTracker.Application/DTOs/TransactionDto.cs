@@ -28,6 +28,6 @@ public record CreateTransactionRequest(
     DateOnly Date,
     string Description,
     decimal Amount,
-    string Type,       // "Income" | "Expense"
+    TransactionType Type,
     Guid? CategoryId
 );

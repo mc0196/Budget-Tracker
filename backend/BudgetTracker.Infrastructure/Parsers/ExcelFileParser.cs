@@ -23,7 +23,8 @@ public class ExcelFileParser : IFileParser
     {
         "Date", "Transaction Date", "ValueDate", "Data",
         "Description", "Narrative", "Details", "Memo", "Reference", "Operazione", "Dettagli",
-        "Amount", "Value", "Importo", "Debit", "Credit", "Withdrawal", "Deposit"
+        "Amount", "Value", "Importo", "Debit", "Credit", "Withdrawal", "Deposit",
+        "Categoria", "Category", "Tipo"
     };
 
     public ExcelFileParser(ILogger<ExcelFileParser> logger)
@@ -127,9 +128,12 @@ public class ExcelFileParser : IFileParser
             amount = credit - debit;
         }
 
+        var categoryName = GetCellByHeader(row, headerCells, ["Categoria", "Category", "Tipo"]);
+        if (string.IsNullOrWhiteSpace(categoryName)) categoryName = null;
+
         var originalText = string.Join(" | ", row.ItemArray.Select(v => v?.ToString() ?? ""));
 
-        return new ParsedTransactionRow(date, description.Trim(), amount, originalText);
+        return new ParsedTransactionRow(date, description.Trim(), amount, originalText, categoryName);
     }
 
     /// <summary>

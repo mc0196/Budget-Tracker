@@ -15,7 +15,21 @@ public class TransactionsController : ControllerBase
         _transactionService = transactionService;
     }
 
-    /// <summary>Create a transaction manually.</summary>
+    /// <summary>Get transactions. If year+month are provided, returns only that month; otherwise returns all.</summary>
+    [HttpGet]
+    [ProducesResponseType(typeof(IReadOnlyList<TransactionDto>), StatusCodes.Status200OK)]
+    public async Task<IActionResult> GetAll(
+        [FromQuery] int? year,
+        [FromQuery] int? month,
+        CancellationToken cancellationToken)
+    {
+        var transactions = year.HasValue && month.HasValue
+            ? await _transactionService.GetByMonthAsync(year.Value, month.Value, cancellationToken)
+            : await _transactionService.GetAllAsync(cancellationToken);
+        return Ok(transactions);
+    }
+
+    /// <summary>Create a manual transaction.</summary>
     [HttpPost]
     [ProducesResponseType(typeof(TransactionDto), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
@@ -25,15 +39,6 @@ public class TransactionsController : ControllerBase
     {
         var created = await _transactionService.CreateAsync(request, cancellationToken);
         return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
-    }
-
-    /// <summary>Get all transactions, most recent first.</summary>
-    [HttpGet]
-    [ProducesResponseType(typeof(IReadOnlyList<TransactionDto>), StatusCodes.Status200OK)]
-    public async Task<IActionResult> GetAll(CancellationToken cancellationToken)
-    {
-        var transactions = await _transactionService.GetAllAsync(cancellationToken);
-        return Ok(transactions);
     }
 
     /// <summary>Get a single transaction by ID.</summary>

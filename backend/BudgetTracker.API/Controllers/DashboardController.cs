@@ -16,9 +16,10 @@ public class DashboardController : ControllerBase
     }
 
     /// <summary>
-    /// Returns dashboard metrics for the given month/year.
-    /// Cards and pie chart are filtered by month; bar chart always covers the full year.
-    /// Defaults to the current month/year if not provided.
+    /// Returns dashboard metrics for the given year+month.
+    /// Summary cards and pie chart are scoped to that month;
+    /// the monthly trend covers the full year.
+    /// Defaults to the current month if no params are provided.
     /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(DashboardDto), StatusCodes.Status200OK)]
@@ -28,11 +29,10 @@ public class DashboardController : ControllerBase
         CancellationToken cancellationToken = default)
     {
         var now = DateTimeOffset.UtcNow;
-        var effectiveYear  = year  ?? now.Year;
-        var effectiveMonth = month ?? now.Month;
+        var y = year ?? now.Year;
+        var m = month ?? now.Month;
 
-        var dashboard = await _dashboardService.GetDashboardAsync(
-            effectiveYear, effectiveMonth, cancellationToken);
+        var dashboard = await _dashboardService.GetDashboardAsync(y, m, cancellationToken);
         return Ok(dashboard);
     }
 }

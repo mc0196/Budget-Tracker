@@ -23,18 +23,16 @@ public class DashboardService
         int month,
         CancellationToken cancellationToken = default)
     {
+        // Summary cards + pie chart: scoped to the selected month
         var monthFrom = new DateOnly(year, month, 1);
         var monthTo   = monthFrom.AddMonths(1).AddDays(-1);
-        var yearFrom  = new DateOnly(year, 1, 1);
-        var yearTo    = new DateOnly(year, 12, 31);
 
-        // Month-scoped transactions → cards + pie chart
-        var monthTransactions = await _transactionRepository.GetByPeriodAsync(
-            monthFrom, monthTo, cancellationToken);
+        // Bar chart: full selected year
+        var yearFrom = new DateOnly(year, 1, 1);
+        var yearTo   = new DateOnly(year, 12, 31);
 
-        // Year-scoped transactions → monthly bar chart
-        var yearTransactions = await _transactionRepository.GetByPeriodAsync(
-            yearFrom, yearTo, cancellationToken);
+        var monthTransactions = await _transactionRepository.GetByPeriodAsync(monthFrom, monthTo, cancellationToken);
+        var yearTransactions  = await _transactionRepository.GetByPeriodAsync(yearFrom,  yearTo,  cancellationToken);
 
         var totalIncome   = monthTransactions.Where(t => t.Type == TransactionType.Income).Sum(t => t.Amount);
         var totalExpenses = monthTransactions.Where(t => t.Type == TransactionType.Expense).Sum(t => t.Amount);

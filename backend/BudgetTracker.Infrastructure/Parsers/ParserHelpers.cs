@@ -9,7 +9,7 @@ namespace BudgetTracker.Infrastructure.Parsers;
 internal static class ParserHelpers
 {
     private static readonly string[] DateFormats =
-        ["dd/MM/yyyy", "MM/dd/yyyy", "yyyy-MM-dd", "dd.MM.yyyy", "d/M/yyyy", "d-M-yyyy"];
+        ["dd/MM/yyyy", "dd/MM/yy", "MM/dd/yyyy", "yyyy-MM-dd", "dd.MM.yyyy", "d/M/yyyy", "d/M/yy", "d-M-yyyy"];
 
     public static bool TryParseDate(string? raw, out DateOnly result)
     {
