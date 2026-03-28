@@ -134,6 +134,10 @@ public class AppDbContext : DbContext
                   Type = TransactionType.Expense, Color = (string?)"#f59e0b", Icon = (string?)"🛍️" },
             new { Id = new Guid("10000000-0000-0000-0000-000000000010"), Name = "Other",
                   Type = TransactionType.Expense, Color = (string?)"#6b7280", Icon = (string?)null },
+            new { Id = new Guid("10000000-0000-0000-0000-000000000011"), Name = "Investments",
+                  Type = TransactionType.Expense, Color = (string?)"#0ea5e9", Icon = (string?)"📈" },
+            new { Id = new Guid("10000000-0000-0000-0000-000000000012"), Name = "Savings",
+                  Type = TransactionType.Expense, Color = (string?)"#8b5cf6", Icon = (string?)"🏦" },
         };
         modelBuilder.Entity<Category>().HasData(categories);
 

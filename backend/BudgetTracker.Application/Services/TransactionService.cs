@@ -27,6 +27,36 @@ public class TransactionService
         return transactions.Select(MapToDto).ToList();
     }
 
+    public async Task<IReadOnlyList<TransactionDto>> GetByMonthAsync(int year, int month, CancellationToken cancellationToken = default)
+    {
+        var from = new DateOnly(year, month, 1);
+        var to = from.AddMonths(1).AddDays(-1);
+        var transactions = await _transactionRepository.GetByPeriodAsync(from, to, cancellationToken);
+        return transactions.Select(MapToDto).ToList();
+    }
+
+    public async Task<TransactionDto> CreateAsync(CreateTransactionRequest request, CancellationToken cancellationToken = default)
+    {
+        var defaultAccountId = new Guid("00000000-0000-0000-0000-000000000001");
+        var transaction = new Domain.Entities.Transaction(
+            accountId: defaultAccountId,
+            date: request.Date,
+            description: request.Description,
+            amount: request.Amount,
+            type: request.Type,
+            isManuallyCreated: true
+        );
+
+        if (request.CategoryId.HasValue)
+            transaction.AssignCategory(request.CategoryId.Value);
+
+        await _transactionRepository.AddRangeAsync([transaction], cancellationToken);
+        await _transactionRepository.SaveChangesAsync(cancellationToken);
+
+        var saved = await _transactionRepository.GetByIdAsync(transaction.Id, cancellationToken);
+        return MapToDto(saved!);
+    }
+
     public async Task<TransactionDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var transaction = await _transactionRepository.GetByIdAsync(id, cancellationToken);

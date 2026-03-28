@@ -65,4 +65,6 @@ export interface TransactionFilters {
   type?: TransactionType;
   from?: string;
   to?: string;
+  year?: number;
+  month?: number;
 }

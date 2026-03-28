@@ -23,3 +23,11 @@ public record UpdateTransactionRequest(
     string? Description,
     decimal? Amount
 );
+
+public record CreateTransactionRequest(
+    DateOnly Date,
+    string Description,
+    decimal Amount,
+    TransactionType Type,
+    Guid? CategoryId
+);

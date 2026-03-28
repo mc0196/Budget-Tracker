@@ -5,6 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { transactionsApi, categoriesApi } from "@/lib/api";
 import { CategoryBadge } from "@/components/CategoryBadge";
 import { AddTransactionModal } from "@/components/AddTransactionModal";
+import { MonthNavigator } from "@/components/MonthNavigator";
 import type { Transaction } from "@/types";
 
 function formatCurrency(value: number) {
@@ -79,17 +80,20 @@ function TransactionRow({
 export default function TransactionsPage() {
   const queryClient = useQueryClient();
   const [showModal, setShowModal] = useState(false);
+  const now = new Date();
+  const [year, setYear] = useState(now.getFullYear());
+  const [month, setMonth] = useState(now.getMonth() + 1);
 
   const { data: transactions = [], isLoading, isError } = useQuery({
-    queryKey: ["transactions"],
-    queryFn: () => transactionsApi.getAll({ pageSize: 500 }),
+    queryKey: ["transactions", year, month],
+    queryFn: () => transactionsApi.getAll({ year, month }),
   });
 
   const { mutate: updateCategory } = useMutation({
     mutationFn: ({ id, categoryId }: { id: string; categoryId: string | null }) =>
       transactionsApi.updateCategory(id, categoryId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["transactions", year, month] });
       queryClient.invalidateQueries({ queryKey: ["dashboard"] });
     },
   });
@@ -97,7 +101,7 @@ export default function TransactionsPage() {
   const { mutate: deleteTransaction } = useMutation({
     mutationFn: (id: string) => transactionsApi.delete(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["transactions", year, month] });
       queryClient.invalidateQueries({ queryKey: ["dashboard"] });
     },
   });
@@ -105,7 +109,7 @@ export default function TransactionsPage() {
   const { mutate: createTransaction, isPending: isCreating } = useMutation({
     mutationFn: transactionsApi.create,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["transactions"] });
+      queryClient.invalidateQueries({ queryKey: ["transactions", year, month] });
       queryClient.invalidateQueries({ queryKey: ["dashboard"] });
       setShowModal(false);
     },
@@ -121,17 +125,20 @@ export default function TransactionsPage() {
 
   return (
     <div className="p-6 max-w-5xl mx-auto space-y-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Transactions</h1>
           <p className="text-sm text-gray-400 mt-0.5">{transactions.length} records</p>
         </div>
-        <button
-          onClick={() => setShowModal(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-xl transition-colors shadow-sm"
-        >
-          + Add
-        </button>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" }}>
+          <MonthNavigator year={year} month={month} onChange={(y, m) => { setYear(y); setMonth(m); }} />
+          <button
+            onClick={() => setShowModal(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-xl transition-colors shadow-sm"
+          >
+            + Add
+          </button>
+        </div>
       </div>
 
       {transactions.length === 0 ? (

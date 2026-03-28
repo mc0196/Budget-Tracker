@@ -16,17 +16,23 @@ public class DashboardController : ControllerBase
     }
 
     /// <summary>
-    /// Returns all dashboard metrics for a given date range.
-    /// Defaults to the last 12 months if no range is provided.
+    /// Returns dashboard metrics for the given year+month.
+    /// Summary cards and pie chart are scoped to that month;
+    /// the monthly trend covers the full year.
+    /// Defaults to the current month if no params are provided.
     /// </summary>
     [HttpGet]
     [ProducesResponseType(typeof(DashboardDto), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetDashboard(
-        [FromQuery] DateOnly? from = null,
-        [FromQuery] DateOnly? to = null,
+        [FromQuery] int? year = null,
+        [FromQuery] int? month = null,
         CancellationToken cancellationToken = default)
     {
-        var dashboard = await _dashboardService.GetDashboardAsync(from, to, cancellationToken);
+        var now = DateTimeOffset.UtcNow;
+        var y = year ?? now.Year;
+        var m = month ?? now.Month;
+
+        var dashboard = await _dashboardService.GetDashboardAsync(y, m, cancellationToken);
         return Ok(dashboard);
     }
 }

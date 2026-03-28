@@ -51,6 +51,8 @@ export const transactionsApi = {
     if (filters.type)       params.set("type",        filters.type);
     if (filters.from)       params.set("from",        filters.from);
     if (filters.to)         params.set("to",          filters.to);
+    if (filters.year)       params.set("year",        String(filters.year));
+    if (filters.month)      params.set("month",       String(filters.month));
     const qs = params.toString();
     return apiFetch<Transaction[]>(`/api/transactions${qs ? `?${qs}` : ""}`);
   },

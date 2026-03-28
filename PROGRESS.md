@@ -6,34 +6,28 @@ Legend: ✅ Done · 🔲 To Do · ▶️ START HERE (next session)
 
 ## ▶️ NEXT SESSION — Start Here
 
-### Step 1 — Git setup (5 min)
+### Start backend
 ```bash
-cd /Users/matteocamero/Documents/SourcePersonal/Budget-Tracker
-git init
-# Claude will create the .gitignore
-git add .
-git commit -m "feat: initial backend — Clean Architecture, .NET 10, 59 tests passing"
-
-# Push to GitHub (create the repo on github.com first, then):
-git remote add origin https://github.com/YOUR_USERNAME/budget-tracker.git
-git branch -M main
-git push -u origin main
-
-# Create frontend branch
-git checkout -b feat/frontend
+source ~/.zshrc
+cd /Users/matteocamero/Documents/SourcePersonal/Budget-Tracker/backend
+dotnet run --project BudgetTracker.API
+# API: http://localhost:5050
 ```
 
-### Step 2 — Frontend scaffold (10 min)
+### Start frontend
 ```bash
-cd /Users/matteocamero/Documents/SourcePersonal/Budget-Tracker
-npx create-next-app@latest frontend --typescript --tailwind --app --src-dir
-cd frontend
-npm install recharts @tanstack/react-query next-pwa
+cd /Users/matteocamero/Documents/SourcePersonal/Budget-Tracker/frontend
+npm run dev
+# App: http://localhost:3000
 ```
 
-### Step 3 — Continue with Claude
-Open Claude Code and say: **"continue with the frontend"**
-Claude has full context and will pick up from Step 3 in Phase 4 below.
+### Active branches
+- `feat/frontend` — frontend changes (open PR → main)
+- `feat/backend/transactions-v2` — backend improvements (open PR → main)
+
+### Next tasks
+1. Categories management UI (keyword rules, bulk re-categorize)
+2. Investments section
 
 ---
 
@@ -102,50 +96,49 @@ Claude has full context and will pick up from Step 3 in Phase 4 below.
 
 ---
 
-## Phase 4 — Frontend (Next.js 15 PWA) 🔲 NOT STARTED
+## Phase 4 — Frontend (Next.js 15 PWA) ✅ COMPLETE
 
-### Setup
-- [ ] 🔲 `npx create-next-app@latest frontend --typescript --tailwind --app --src-dir`
-- [ ] 🔲 Install: `recharts`, `@tanstack/react-query`, `next-pwa`
-- [ ] 🔲 Configure `next.config.js` with PWA plugin
-- [ ] 🔲 Set up API client (`lib/api.ts`)
-- [ ] 🔲 Global layout — desktop sidebar + mobile bottom nav bar
+### Setup ✅
+- [x] Next.js 15 + TypeScript + Tailwind CSS v4
+- [x] Recharts, @tanstack/react-query
+- [x] API client (`lib/api.ts`) pointing to backend on :5050
+- [x] Global layout — desktop sidebar + mobile bottom nav
 
-### Pages
-- [ ] 🔲 `/dashboard` — summary cards + spending pie chart + monthly bar chart
-- [ ] 🔲 `/upload` — drag-and-drop file upload with progress + result feedback
-- [ ] 🔲 `/transactions` — list with inline category editor
+### Pages ✅
+- [x] `/dashboard` — month navigation, summary cards, spending pie chart, monthly bar chart
+- [x] `/upload` — drag-and-drop CSV/Excel import
+- [x] `/transactions` — list with inline category editor, add manual transaction, delete
 
-### Components
-- [ ] 🔲 `SummaryCard` — income / expenses / net balance
-- [ ] 🔲 `SpendingPieChart` — Recharts pie chart by category
-- [ ] 🔲 `MonthlyBarChart` — Recharts bar chart, income vs expenses
-- [ ] 🔲 `TransactionRow` — row with editable category dropdown
-- [ ] 🔲 `FileDropzone` — drag-and-drop CSV/Excel upload
-- [ ] 🔲 `CategoryBadge` — colored pill with icon
+### Components ✅
+- [x] `SummaryCard`, `SpendingPieChart` (donut), `MonthlyBarChart`
+- [x] `MonthNavigator` — prev/next month with Today button
+- [x] `AddTransactionModal` — form to add transactions manually
+- [x] `CategoryBadge`, `FileDropzone`
 
 ---
 
-## Phase 5 — PWA 🔲 NOT STARTED
+## Phase 5 — Backend Improvements ✅ COMPLETE
 
-- [ ] 🔲 `public/manifest.json`
-- [ ] 🔲 Service worker via `next-pwa`
-- [ ] 🔲 Offline fallback page
-- [ ] 🔲 iOS meta tags
-- [ ] 🔲 Test "Add to Home Screen" on iOS + Android
+- [x] Fix Excel parser for Intesa Sanpaolo format (20+ metadata rows, DateTime cells)
+- [x] `GET /api/dashboard?year=&month=` — month-scoped cards + pie, year bar chart
+- [x] `POST /api/transactions` — manual transaction entry
+- [x] Investments + Savings categories added to seed data
+- [x] Auto-categorization rules for degiro, fineco, directa, trading
 
 ---
 
-## Phase 6 — Polish & Future
+## Phase 6 — In Progress
 
-- [ ] 🔲 Git + GitHub setup
-- [ ] 🔲 `.gitignore` for .NET + Node
+- [x] ✅ Transactions page: month filter (MonthNavigator + GET ?year=&month=)
+- [x] ✅ POST /api/transactions — create manual transaction (was missing from backend)
+- [x] ✅ Dashboard bug fix: cards+pie now month-scoped, bar chart year-scoped
+- [ ] 🔲 Categories management UI (add/edit keyword rules, bulk re-categorize)
+- [ ] 🔲 Investments section (view total invested, breakdown by broker)
 - [ ] 🔲 Export transactions to CSV
-- [ ] 🔲 Categorization rules management UI
 - [ ] 🔲 Pagination on transactions list
+- [ ] 🔲 PWA: service worker, offline fallback, iOS meta tags
 - [ ] 🔲 Docker Compose (API + frontend)
 - [ ] 🔲 PostgreSQL guide for production
-- [ ] 🔲 Open Banking / PSD2 integration
 
 ---
 
@@ -158,7 +151,7 @@ Claude has full context and will pick up from Step 3 in Phase 4 below.
 | `BudgetTracker.Infrastructure` | ✅ Builds — 0 errors |
 | `BudgetTracker.API` | ✅ Builds — 0 errors |
 | `BudgetTracker.Tests` | ✅ **59/59 tests passing** |
-| Frontend | 🔲 Not started |
+| Frontend | ✅ Running on :3000 |
 
 ## How to Run Backend
 
@@ -167,11 +160,11 @@ export DOTNET_ROOT=/usr/local/share/dotnet
 export PATH="/usr/local/share/dotnet:$PATH"
 cd backend
 dotnet run --project BudgetTracker.API
-# API: http://localhost:5000
-# Swagger: http://localhost:5000/swagger
+# API: http://localhost:5050
+# Swagger: http://localhost:5050/swagger
 
 # Run tests
 dotnet test
 ```
 
-Last updated: 2026-03-22
+Last updated: 2026-03-28

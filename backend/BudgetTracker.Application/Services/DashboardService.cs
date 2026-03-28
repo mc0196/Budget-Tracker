@@ -19,28 +19,27 @@ public class DashboardService
     }
 
     public async Task<DashboardDto> GetDashboardAsync(
-        DateOnly? from = null,
-        DateOnly? to = null,
+        int year,
+        int month,
         CancellationToken cancellationToken = default)
     {
-        var effectiveFrom = from ?? new DateOnly(DateTimeOffset.UtcNow.Year - 1, 1, 1);
-        var effectiveTo = to ?? DateOnly.FromDateTime(DateTimeOffset.UtcNow.DateTime);
+        // Summary cards + pie chart: scoped to the selected month
+        var monthFrom = new DateOnly(year, month, 1);
+        var monthTo   = monthFrom.AddMonths(1).AddDays(-1);
 
-        var transactions = await _transactionRepository.GetByPeriodAsync(
-            effectiveFrom, effectiveTo, cancellationToken);
+        // Bar chart: full selected year
+        var yearFrom = new DateOnly(year, 1, 1);
+        var yearTo   = new DateOnly(year, 12, 31);
 
-        var totalIncome = transactions
-            .Where(t => t.Type == TransactionType.Income)
-            .Sum(t => t.Amount);
+        var monthTransactions = await _transactionRepository.GetByPeriodAsync(monthFrom, monthTo, cancellationToken);
+        var yearTransactions  = await _transactionRepository.GetByPeriodAsync(yearFrom,  yearTo,  cancellationToken);
 
-        var totalExpenses = transactions
-            .Where(t => t.Type == TransactionType.Expense)
-            .Sum(t => t.Amount);
+        var totalIncome   = monthTransactions.Where(t => t.Type == TransactionType.Income).Sum(t => t.Amount);
+        var totalExpenses = monthTransactions.Where(t => t.Type == TransactionType.Expense).Sum(t => t.Amount);
+        var netBalance    = totalIncome - totalExpenses;
 
-        var netBalance = totalIncome - totalExpenses;
-
-        var spendingByCategory = BuildCategorySpending(transactions, totalExpenses);
-        var monthlyTrend = BuildMonthlyTrend(transactions);
+        var spendingByCategory = BuildCategorySpending(monthTransactions, totalExpenses);
+        var monthlyTrend       = BuildMonthlyTrend(yearTransactions);
 
         return new DashboardDto(
             TotalIncome: totalIncome,
